@@ -50,6 +50,11 @@ describe("libraryAdd", () => {
       statusId: 1,
     });
   });
+
+  it("throws TokenError when no token", async () => {
+    vi.spyOn(auth, "getToken").mockResolvedValueOnce(null);
+    await expect(libraryAdd({ bookId: 1, status: "want" })).rejects.toThrow(TokenError);
+  });
 });
 
 describe("libraryUpdate", () => {
