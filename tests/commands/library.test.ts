@@ -64,12 +64,11 @@ describe("libraryUpdate", () => {
       update_user_book: { id: 1, user_book: { id: 101, status_id: 3, rating: 4.5, review: null } },
     });
     await libraryUpdate({ id: 101, rating: 4.5 });
-    expect(spy).toHaveBeenCalledWith(
-      "tok",
-      expect.stringContaining("$rating"),
-      expect.objectContaining({ rating: 4.5 })
-    );
-    expect(spy).not.toHaveBeenCalledWith("tok", expect.stringContaining("$statusId"), expect.anything());
+    const callArgs = spy.mock.calls[0]!;
+    expect(callArgs[1]).toContain("$rating");
+    expect(callArgs[1]).not.toContain("$statusId");
+    expect(callArgs[2]).toEqual(expect.objectContaining({ rating: 4.5 }));
+    expect(callArgs[2]).not.toEqual(expect.objectContaining({ statusId: expect.anything() }));
   });
 });
 
