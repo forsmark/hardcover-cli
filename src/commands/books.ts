@@ -71,7 +71,7 @@ export function registerBooksCommands(program: Command): void {
       const input = BookSearchInputSchema.safeParse({
         query: opts.query,
         type: opts.type,
-        limit: opts.limit,
+        limit: parseInt(opts.limit as string, 10),
       });
       if (!input.success) {
         console.error(input.error.issues[0]?.message ?? "Invalid input");
@@ -110,7 +110,7 @@ export function registerBooksCommands(program: Command): void {
         const result = await booksGet(input.data);
         if (!result) {
           console.error(`Book with ID ${opts.id} not found.`);
-          process.exit(2);
+          process.exit(1);
         }
         if (opts.pretty) {
           const authors = result.contributions
