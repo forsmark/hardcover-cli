@@ -20,10 +20,11 @@ const MOCK_USER = {
 describe("userMe", () => {
   it("returns current user data", async () => {
     vi.spyOn(auth, "getToken").mockResolvedValueOnce("token123");
-    vi.spyOn(client, "gqlRequest").mockResolvedValueOnce({ me: [MOCK_USER] });
+    const spy = vi.spyOn(client, "gqlRequest").mockResolvedValueOnce({ me: [MOCK_USER] });
     const result = await userMe();
     expect(result.username).toBe("marc");
     expect(result.books_count).toBe(42);
+    expect(spy).toHaveBeenCalledWith("token123", expect.any(String));
   });
 
   it("throws TokenError when no token", async () => {

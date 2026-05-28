@@ -8,9 +8,9 @@ import { handleCommandError } from "./auth.js";
 
 const USER_ME_EXAMPLE: User = {
   id: 1,
-  username: "marc",
-  name: "Marc Forsmark Nielsen",
-  bio: "Books are great.",
+  username: "janereader",
+  name: "Jane Reader",
+  bio: "Avid reader of all genres.",
   books_count: 42,
   followers_count: 10,
   followed_users_count: 5,
