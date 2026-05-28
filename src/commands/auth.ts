@@ -3,7 +3,7 @@ import * as readline from "readline";
 import { z } from "zod";
 import { gqlRequest, ApiError } from "../api/client.js";
 import { getToken, setToken, removeToken, maskToken, TokenError } from "../auth.js";
-import { ME_ID_QUERY } from "../api/queries.js";
+import { ME_QUERY } from "../api/queries.js";
 
 const MeIdResponseSchema = z.object({
   me: z.array(z.object({ id: z.number(), username: z.string() })).min(1),
@@ -13,7 +13,7 @@ export async function authStatus(): Promise<{ username: string; maskedToken: str
   const token = await getToken();
   if (!token) throw new TokenError();
 
-  const data = await gqlRequest<{ me: { id: number; username: string }[] }>(token, ME_ID_QUERY);
+  const data = await gqlRequest<{ me: { id: number; username: string }[] }>(token, ME_QUERY);
   const parsed = MeIdResponseSchema.parse(data);
   const user = parsed.me[0]!;
 

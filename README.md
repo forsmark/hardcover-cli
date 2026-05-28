@@ -34,6 +34,8 @@ export HARDCOVER_API_TOKEN=<your_token>
 HARDCOVER_API_TOKEN=<your_token>
 ```
 
+> **Note:** The API requires a `Bearer` prefix on the token. The CLI handles this automatically — just provide the raw token value.
+
 Verify authentication:
 ```bash
 bun src/index.ts auth status

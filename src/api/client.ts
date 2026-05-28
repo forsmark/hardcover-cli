@@ -18,7 +18,7 @@ export async function gqlRequest<T>(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: token,
+        authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ query, variables }),
     });

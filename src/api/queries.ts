@@ -99,15 +99,14 @@ export function buildUpdateUserBookMutation(fields: {
     setFields.push("review: $review");
   }
 
+  const returnFields: string[] = ["id", "status_id", "rating", "review"];
+
   return `
     mutation UpdateUserBook(${varDefs.join(", ")}) {
       update_user_book(id: $id, object: { ${setFields.join(", ")} }) {
         id
         user_book {
-          id
-          status_id
-          rating
-          review
+          ${returnFields.join("\n          ")}
         }
       }
     }

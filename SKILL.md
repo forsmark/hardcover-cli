@@ -94,6 +94,17 @@ goals delete --id <int>
 - Use `--example` on any command to see the exact JSON shape without auth or network.
 - `library list` returns library entry IDs (not book IDs). Use these IDs for `library update` and `library remove`.
 - `books search` returns book IDs. Use these with `library add --book-id`.
+- **Page progress** is stored via a separate `user_book_reads` record, not directly on the user_book.
+  To set or update page progress, use the `upsert_user_book_reads` mutation with `progress_pages`:
+  ```graphql
+  mutation UpsertRead($userBookId: Int!, $progressPages: Int!) {
+    upsert_user_book_reads(
+      user_book_id: $userBookId
+      datesRead: { progress_pages: $progressPages }
+    ) { user_book_id }
+  }
+  ```
+  Where `userBookId` is the **library entry ID** (not the book ID). This is a separate operation from `library update`.
 - Pipe output through `jq` for filtering: `bun src/index.ts library list | jq '.[] | select(.status == "reading")'`
 - All errors go to stderr. Check exit code: 0=success, 1=input/auth error, 2=API error, 3=network failure.
 - Rate limit: 60 requests/minute.
