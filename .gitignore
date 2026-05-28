@@ -1,4 +1,31 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
+
+# Environment / secrets
 .env
+.env.local
+
+# Lock files (bun uses bun.lock, not bun.lockb)
 bun.lockb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# TypeScript incremental build
+*.tsbuildinfo
+docs/
+CLAUDE.md
+PROJECT.md
