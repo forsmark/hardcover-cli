@@ -51,7 +51,7 @@ export async function goalsCreate(input: {
 
 export async function goalsUpdate(input: {
   id: number;
-  target?: number;
+  target: number;
 }): Promise<{ success: boolean; id: number }> {
   const token = await getToken();
   if (!token) throw new TokenError();
@@ -154,7 +154,7 @@ export function registerGoalsCommands(program: Command): void {
         process.exit(1);
       }
       try {
-        const result = await goalsUpdate(input.data);
+        const result = await goalsUpdate({ id: input.data.id, target: input.data.target! });
         if (opts.pretty) {
           console.log(`Goal ${result.id} updated.`);
         } else {
