@@ -11,7 +11,7 @@ describe("authStatus", () => {
     vi.spyOn(client, "gqlRequest").mockResolvedValueOnce({ me: [{ id: 1, username: "marc" }] });
     const result = await authStatus();
     expect(result.username).toBe("marc");
-    expect(result.maskedToken).toBe("****ghijkl");
+    expect(result.maskedToken).toBe("****ijkl");
   });
 
   it("throws TokenError when no token stored", async () => {

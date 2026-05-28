@@ -40,6 +40,6 @@ export async function removeToken(): Promise<void> {
 }
 
 export function maskToken(token: string): string {
-  if (token.length < 6) return "****";
-  return `****${token.slice(-6)}`;
+  if (token.length < 4) return "****";
+  return `****${token.slice(-4)}`;
 }
