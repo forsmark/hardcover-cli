@@ -95,16 +95,19 @@ goals delete --id <int>
 - `library list` returns library entry IDs (not book IDs). Use these IDs for `library update` and `library remove`.
 - `books search` returns book IDs. Use these with `library add --book-id`.
 - **Page progress** is stored via a separate `user_book_reads` record, not directly on the user_book.
-  To set or update page progress, use the `upsert_user_book_reads` mutation with `progress_pages`:
+  To set or update page progress:
+  1. Check if a read session already exists for the library entry
+  2. If none exists, **insert** one:
   ```graphql
-  mutation UpsertRead($userBookId: Int!, $progressPages: Int!) {
-    upsert_user_book_reads(
+  mutation InsRead($userBookId: Int!, $progressPages: Int!) {
+    insert_user_book_read(
       user_book_id: $userBookId
-      datesRead: { progress_pages: $progressPages }
-    ) { user_book_id }
+      user_book_read: { progress_pages: $progressPages, started_at: "<YYYY-MM-DD>" }
+    ) { id user_book_read { id progress_pages } }
   }
   ```
-  Where `userBookId` is the **library entry ID** (not the book ID). This is a separate operation from `library update`.
+  3. If one exists but needs replacing, delete it first via `delete_user_book_read(id: <session_id>)`
+  Where `userBookId` is the **library entry ID** (not the book ID). Note: `upsert_user_book_reads` and `update_user_book_read` do NOT support `progress_pages` — only `insert_user_book_read` with `DatesReadInput` works.
 - Pipe output through `jq` for filtering: `bun src/index.ts library list | jq '.[] | select(.status == "reading")'`
 - All errors go to stderr. Check exit code: 0=success, 1=input/auth error, 2=API error, 3=network failure.
 - Rate limit: 60 requests/minute.
