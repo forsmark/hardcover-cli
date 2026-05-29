@@ -26,7 +26,7 @@ describe("gqlRequest", () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: "mytoken",
+        authorization: "Bearer mytoken",
       },
       body: JSON.stringify({ query: "query { me { id } }", variables: { foo: "bar" } }),
     });
