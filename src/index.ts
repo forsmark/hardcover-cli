@@ -5,6 +5,7 @@ import { registerBooksCommands } from "./commands/books.js";
 import { registerLibraryCommands } from "./commands/library.js";
 import { registerGoalsCommands } from "./commands/goals.js";
 import { registerUserCommands } from "./commands/user.js";
+import { fail } from "./output.js";
 
 const program = new Command();
 
@@ -20,6 +21,5 @@ registerGoalsCommands(program);
 registerUserCommands(program);
 
 program.parseAsync(process.argv).catch((err: unknown) => {
-  console.error(err instanceof Error ? err.message : String(err));
-  process.exit(1);
+  fail(err);
 });

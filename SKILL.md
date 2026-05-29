@@ -1,6 +1,6 @@
 # hardcover-cli — Agent Usage Guide
 
-This CLI wraps the Hardcover book tracking API. All commands output JSON to stdout. Use `--example` to inspect the schema for any command without making an API call.
+This CLI wraps the Hardcover book tracking API. All commands output JSON to **stdout**; errors are JSON on **stderr** as `{"error":{"code","message","status","details"}}`. Use `--example` to inspect the schema for any command without making an API call.
 
 ## Setup check
 
@@ -42,7 +42,7 @@ books search --query <str>                         # Required
 
 books get --id <int>
 # Returns: { id, title, subtitle, pages, rating, contributions: [{ author: { name } }] }
-# Returns null if not found (exit code 1)
+# Errors with NOT_FOUND (exit code 4) if the book does not exist
 ```
 
 ### library
@@ -109,5 +109,5 @@ goals delete --id <int>
   3. If one exists but needs replacing, delete it first via `delete_user_book_read(id: <session_id>)`
   Where `userBookId` is the **library entry ID** (not the book ID). Note: `upsert_user_book_reads` and `update_user_book_read` do NOT support `progress_pages` — only `insert_user_book_read` with `DatesReadInput` works.
 - Pipe output through `jq` for filtering: `bun src/index.ts library list | jq '.[] | select(.status == "reading")'`
-- All errors go to stderr. Check exit code: 0=success, 1=input/auth error, 2=API error, 3=network failure.
+- All errors are JSON on stderr. Exit codes: 0=success, 2=auth (run `auth set`), 3=validation, 4=not found, 5=network, 6=schema mismatch, 1=other HTTP/unexpected.
 - Rate limit: 60 requests/minute.

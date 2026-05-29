@@ -16,6 +16,7 @@ import {
 import type { Goal } from "../schemas/goals.js";
 import { z } from "zod";
 import { handleCommandError } from "./auth.js";
+import { failValidation } from "../output.js";
 
 const GOALS_LIST_EXAMPLE: Goal[] = [
   { id: 1, metric: "books", goal: 12, progress: 5, state: "active", start_date: "2026-01-01", end_date: "2026-12-31" },
@@ -118,8 +119,7 @@ export function registerGoalsCommands(program: Command): void {
         end: opts.end,
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await goalsCreate(input.data);
@@ -150,8 +150,7 @@ export function registerGoalsCommands(program: Command): void {
         target: opts.target !== undefined ? parseInt(opts.target as string, 10) : undefined,
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await goalsUpdate({ id: input.data.id, target: input.data.target! });
@@ -180,8 +179,7 @@ export function registerGoalsCommands(program: Command): void {
         id: parseInt(opts.id as string, 10),
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await goalsDelete(input.data);

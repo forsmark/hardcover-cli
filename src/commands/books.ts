@@ -10,6 +10,7 @@ import {
 } from "../schemas/books.js";
 import type { Book, BookSearchInput } from "../schemas/books.js";
 import { handleCommandError } from "./auth.js";
+import { failValidation, failNotFound } from "../output.js";
 
 const BOOKS_SEARCH_EXAMPLE = {
   ids: [12345, 67890],
@@ -74,8 +75,7 @@ export function registerBooksCommands(program: Command): void {
         limit: parseInt(opts.limit as string, 10),
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await booksSearch(input.data);
@@ -103,14 +103,12 @@ export function registerBooksCommands(program: Command): void {
       }
       const input = BookGetInputSchema.safeParse({ id: parseInt(opts.id, 10) });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await booksGet(input.data);
         if (!result) {
-          console.error(`Book with ID ${opts.id} not found.`);
-          process.exit(1);
+          failNotFound(`Book with ID ${opts.id} not found.`);
         }
         if (opts.pretty) {
           const authors = result.contributions

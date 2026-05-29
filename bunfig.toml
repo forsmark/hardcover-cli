@@ -1,3 +1,4 @@
 [install]
 exact = true
+# Refuse package versions younger than 7 days (604800s) to reduce supply-chain risk.
 minimumReleaseAge = 604800

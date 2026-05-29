@@ -1,9 +1,11 @@
 import { Command } from "commander";
 import * as readline from "readline";
 import { z } from "zod";
-import { gqlRequest, ApiError } from "../api/client.js";
+import { gqlRequest } from "../api/client.js";
 import { getToken, setToken, removeToken, maskToken, TokenError } from "../auth.js";
 import { ME_QUERY } from "../api/queries.js";
+import { HardcoverError } from "../errors.js";
+import { fail } from "../output.js";
 
 const MeIdResponseSchema = z.object({
   me: z.array(z.object({ id: z.number(), username: z.string() })).min(1),
@@ -40,8 +42,7 @@ export function registerAuthCommands(program: Command): void {
         });
       });
       if (!token) {
-        console.error("Token cannot be empty.");
-        process.exit(1);
+        fail(new HardcoverError("VALIDATION", "Token cannot be empty."));
       }
       await setToken(token);
       console.log(JSON.stringify({ success: true }));
@@ -83,19 +84,7 @@ export function registerAuthCommands(program: Command): void {
     });
 }
 
+// Re-exported for the resource commands; delegates to the canonical error contract.
 export function handleCommandError(err: unknown): never {
-  if (err instanceof TokenError) {
-    console.error(err.message);
-    process.exit(1);
-  }
-  if (err instanceof ApiError) {
-    console.error(err.message);
-    process.exit(2);
-  }
-  if (err instanceof Error && err.message === "fetch_failed") {
-    console.error("Could not reach the Hardcover API. Check your connection.");
-    process.exit(3);
-  }
-  console.error(String(err));
-  process.exit(2);
+  fail(err);
 }

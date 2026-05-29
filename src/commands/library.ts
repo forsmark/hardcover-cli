@@ -19,6 +19,7 @@ import {
 import type { StatusName } from "../schemas/library.js";
 import { z } from "zod";
 import { handleCommandError } from "./auth.js";
+import { failValidation } from "../output.js";
 
 interface LibraryEntry {
   id: number;
@@ -129,8 +130,7 @@ export function registerLibraryCommands(program: Command): void {
         limit: parseInt(opts.limit as string, 10),
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await libraryList(input.data);
@@ -165,8 +165,7 @@ export function registerLibraryCommands(program: Command): void {
         status: opts.status,
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await libraryAdd(input.data);
@@ -201,8 +200,7 @@ export function registerLibraryCommands(program: Command): void {
         review: opts.review,
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await libraryUpdate(input.data);
@@ -231,8 +229,7 @@ export function registerLibraryCommands(program: Command): void {
         id: parseInt(opts.id as string, 10),
       });
       if (!input.success) {
-        console.error(input.error.issues[0]?.message ?? "Invalid input");
-        process.exit(1);
+        failValidation(input.error);
       }
       try {
         const result = await libraryRemove(input.data);
